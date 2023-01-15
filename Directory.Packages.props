@@ -1,0 +1,13 @@
+<Project>
+  <ImportGroup
+    Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Packages.props', '$(MSBuildThisFileDirectory)../'))) == 'true'">
+    <Import
+      Project="$([MSBuild]::GetPathOfFileAbove('Directory.Packages.props', '$(MSBuildThisFileDirectory)../'))" />
+  </ImportGroup>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>
+      true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+</Project>
