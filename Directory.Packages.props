@@ -6,17 +6,14 @@
   </ImportGroup>
 
   <ItemGroup Label="Common Packages">
-    <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0" />
-    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.376" />
-    <PackageVersion Include="SerilogAnalyzer" Version="0.15.0" />
-    <PackageVersion Include="SmartAnalyzers.ExceptionAnalyzer" Version="1.0.10" />
-    <PackageVersion Include="SmartAnalyzers.MultithreadingAnalyzer" Version="1.1.31" />
-  </ItemGroup>
-  <ItemGroup Label="SourceLink">
     <PackageVersion Include="Microsoft.SourceLink.AzureRepos.Git" Version="1.1.1" />
     <PackageVersion Include="Microsoft.SourceLink.Bitbucket.Git" Version="1.1.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitLab" Version="1.1.1" />
+    <PackageVersion Include="SerilogAnalyzer" Version="0.15.0" />
+    <PackageVersion Include="SmartAnalyzers.ExceptionAnalyzer" Version="1.0.10" />
+    <PackageVersion Include="SmartAnalyzers.MultithreadingAnalyzer" Version="1.1.31" />
+    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
   </ItemGroup>
 
 </Project>
