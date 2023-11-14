@@ -5,6 +5,5 @@
 
   <PropertyGroup Label="Package">
     <PackageProjectUrl>http://localhost</PackageProjectUrl>
-    <RepositoryUrl>http://localhost</RepositoryUrl>
   </PropertyGroup>
 </Project>
