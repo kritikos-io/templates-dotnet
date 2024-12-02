@@ -5,19 +5,19 @@
       Project="$([MSBuild]::GetPathOfFileAbove('Directory.Packages.props', '$(MSBuildThisFileDirectory)../'))" />
   </ImportGroup>
   <ItemGroup Label="Common Packages">
-    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
-    <PackageVersion Include="FluentAssertions" Version="6.12.0" />
-    <PackageVersion Include="FluentAssertions.Analyzers" Version="0.26.0" />
-    <PackageVersion Include="GitVersion.MSBuild" Version="5.12.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageVersion Include="NSubstitute" Version="5.1.0" />
-    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.16" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="FluentAssertions" Version="7.0.0" />
+    <PackageVersion Include="FluentAssertions.Analyzers" Version="0.34.0" />
+    <PackageVersion Include="GitVersion.MSBuild" Version="6.0.5" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
     <PackageVersion Include="SerilogAnalyzer" Version="0.15.0" />
     <PackageVersion Include="SmartAnalyzers.ExceptionAnalyzer" Version="1.0.10" />
     <PackageVersion Include="SmartAnalyzers.MultithreadingAnalyzer" Version="1.1.31" />
-    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.507" />
-    <PackageVersion Include="xunit" Version="2.6.1" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3">
+    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
+    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
