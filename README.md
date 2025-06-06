@@ -1,12 +1,27 @@
 # Templates - Dotnet
 
-A simple template leveraging [.Config][1] dotfiles submodule  for rapid project deployment. Simply rename Solution.{code-workspace,sln,sln.DotSettings} to your project name and get started! To use:
+A starting point for new .NET projects, based on opinionated rules.
 
-- Make sure git symlinks are enabled in your system
-- Rename Solution.sln, Solution.sln.DotSettings and Solution.code-workspace to your project name (replacing only "Solution" on the file names)
-- Edit [src/Directory.Build.props](src/Directory.Build.props) and add your project site URL (or your repository, if no site available)
-- Enter a terminal inside the folder you just cloned and run `git submodule update --init`
+1. In order to be able to update your repository with the latest changes, you can use the following command **after creating** your repo:
 
-You can replace the submodule with a compatible fork (to preserve your own default namespace etc) **provided it keeps file naming intact** since most files are appearing as symlinks.
+```bash
+git remote add template https://github.com/kritikos-io/templates-dotnet
+git fetch --all
+git merge template/main --allow-unrelated-histories
+```
 
-[1]: https://github.com/kritikos-io/.config
+2. Do this as soon as possible, as the unrelated histories flag will lead to a few conflicts that you will need to resolve manually.
+3. Afterwards, you can pull future changes using
+
+```bash
+git pull template main
+```
+
+4. Rename the solution and project files, replacing 'Solution' to match your project name.
+   1. Solution.sln
+   2. Solution.sln.DotSettings
+   3. Solution.code-workspace
+
+> Keep in mind that until the dotnet toolset handles generating new projects correctly, you will need to edit new csproj files and remove Version attributes from PackageReference entries. For more details consult [Central Package Management].
+
+[Central Package Management]: https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management
