@@ -10,5 +10,5 @@ trim_trailing_whitespace = true
 [*.sh]
 end_of_line = lf
 
-[**/Migrations/*.cs]
+[{*.Generated.*.cs,Migrations/*,Scripts/*}]
 generated_code = true

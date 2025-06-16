@@ -1,1 +1,190 @@
-../.config/.vscode/tasks-dotnet.json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "restore",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "restore",
+        "--verbosity",
+        "minimal",
+        "-bl:logs\\restore.binlog"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "build",
+        "--configuration",
+        "Release",
+        "--no-restore",
+        "--nologo",
+        "--verbosity",
+        "minimal",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "/p:TF_BUILD=true",
+        "-bl:logs\\build.binlog"
+      ],
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "restore"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "test",
+        "--configuration",
+        "Release",
+        "--no-build",
+        "--verbosity",
+        "normal",
+        "--collect:'Code Coverage'",
+        "-bl:logs\\test.binlog"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "build"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "pack",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "pack",
+        "--configuration",
+        "Release",
+        "--no-restore",
+        "--nologo",
+        "--verbosity",
+        "minimal",
+        "--output",
+        "packages",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "/p:TF_BUILD=true",
+        "-bl:logs\\pack.binlog"
+      ],
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "publish"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "publish",
+        "--configuration",
+        "Release",
+        "--no-restore",
+        "--no-build",
+        "--nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "/p:TF_BUILD=true",
+        "-bl:logs\\publish.binlog"
+      ],
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "test"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "clean",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "clean",
+        "--configuration",
+        "Release",
+        "--verbosity",
+        "minimal"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "cleanPublished",
+      "type": "process",
+      "command": "del",
+      "args": [
+        "-rf",
+        "upload/*"
+      ],
+      "group": "build",
+      "presentation": {},
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

@@ -14,7 +14,6 @@
     <File Path="Directory.Packages.props" />
     <File Path="dotnet.ruleset" />
     <File Path="GitVersion.yml" />
-    <File Path="stylecop.json" />
     <File Path="xunit.runner.json" />
   </Folder>
   <Folder Name="/samples/">

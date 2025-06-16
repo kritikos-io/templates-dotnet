@@ -1,0 +1,68 @@
+<Project>
+  <Target Name="RestoreNpmAssets">
+    <Exec Command="npm install" />
+  </Target>
+
+  <PropertyGroup Label="Test Functionality" Condition="$(IsTestProject) == 'true'">
+    <IsPackable>false</IsPackable>
+    <PackAsTool>false</PackAsTool>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <RunSettingsFilePath>$(MSBuildThisFileDirectory)\.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+
+  <ItemGroup Label="Hide Assets">
+    <None Update="icon.png" Visible="false" />
+    <None Update="..\..\README.md" Visible="false" />
+    <None Update="packages.lock.json" Visible="false" />
+  </ItemGroup>
+
+  <Target Name="AddInternalsVisibleTo" BeforeTargets="BeforeCompile">
+    <!--
+      Add an ItemGroup with tags in the following format:
+      <InternalsVisibleTo Include="CustomTest1" />
+        -> [assembly: InternalsVisibleTo("CustomTest1")]
+      <InternalsVisibleTo Include="CustomTest2, PublicKey=abc" />
+        -> [assembly: InternalsVisibleTo("CustomTest2, PublicKey=abc")]
+      <InternalsVisibleTo Include="$(AssemblyName).Custom" />
+        -> [assembly: InternalsVisibleTo("ClassLibrary1.Custom")]
+
+      on a project with assembly name ClasLibrary1:
+      <InternalsVisibleToSuffix Include=".Tests" />
+        -> [assembly: InternalsVisibleTo("ClassLibrary1.Tests")]
+      <InternalsVisibleToSuffix Include=".FunctionalTests" />
+        -> [assembly: InternalsVisibleTo("ClassLibrary1.FunctionalTests")]
+     -->
+
+    <!-- Add default suffix for tests -->
+    <ItemGroup>
+      <InternalsVisibleToSuffix Include=".Tests" />
+    </ItemGroup>
+
+    <!-- Handle InternalsVisibleTo -->
+    <ItemGroup Condition="'@(InternalsVisibleTo->Count())' &gt; 0">
+      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>%(InternalsVisibleTo.Identity)</_Parameter1>
+      </AssemblyAttribute>
+    </ItemGroup>
+
+    <!-- Handle InternalsVisibleToSuffix -->
+    <ItemGroup Condition="@(InternalsVisibleToSuffix->Count()) &gt; 0">
+      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo"
+        Condition="$(AssemblyName.EndsWith(%(InternalsVisibleToSuffix.Identity))) == 'false'">
+        <_Parameter1>$(AssemblyName)%(InternalsVisibleToSuffix.Identity)</_Parameter1>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CreateReleaseNotesFromFile" BeforeTargets="GenerateNuspec"
+    Condition="Exists('$(MSBuildThisFileDirectory)changes.log')">
+    <ReadLinesFromFile File="$(MSBuildThisFileDirectory)changes.log">
+      <Output TaskParameter="Lines" ItemName="ReleaseNoteLines" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
+</Project>

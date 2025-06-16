@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "Source"
+    }
+  ],
+  "extensions": {
+    "recommendations": [
+      "EditorConfig.EditorConfig",
+      "mhutchie.git-graph",
+      "ms-dotnettools.csdevkit",
+      "ms-vscode-remote.remote-containers",
+      "seatonjiang.gitmoji-vscode",
+    ]
+  }
+}

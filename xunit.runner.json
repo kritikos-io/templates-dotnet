@@ -1,0 +1,9 @@
+{
+  "$schema": "https://xunit.net/schema/current/xunit.runner.schema.json",
+  "methodDisplay": "classAndMethod",
+  "methodDisplayOptions": "all",
+  "parallelAlgorithm": "aggressive",
+  "parallelizeAssembly": true,
+  "longRunningTestSeconds": 5,
+  "showLiveOutput": true
+}
