@@ -1,6 +1,6 @@
 <Project>
   <ItemGroup Label="Packages">
-    <PackageVersion Include="GitVersion.MsBuild" Version="6.3.0" />
+    <PackageVersion Include="GitVersion.MsBuild" Version="6.4.0" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />

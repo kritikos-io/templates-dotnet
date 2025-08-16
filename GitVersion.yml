@@ -1,19 +1,24 @@
-workflow: GitFlow/v1
+workflow: GitHubFlow/v1
 mode: ContinuousDelivery
+tag-prefix: '[vV]?'
+ignore:
+  paths:
+    - ^(?!src\/|Directory\.Packages\.props|GitVersion.yml).*
 branches:
-  main:
-    mode: ContinuousDelivery
-    label: ''
   develop:
-    label: alpha
+    label: 'beta'
+    regex: '^(dev|develop|development)$'
     source-branches:
       - main
-      - feature
   feature:
     mode: ContinuousDelivery
-    label: '{BranchName}'
     source-branches:
       - develop
+  hotfix:
+    regex: ^hotfix?[\/-](?<BranchName>.+)
+    mode: ContinuousDelivery
+  release:
+    mode: ContinuousDelivery
 
 prevent-increment:
   of-merged-branch: true
