@@ -94,8 +94,6 @@
         "--nologo",
         "--verbosity",
         "minimal",
-        "--output",
-        "packages",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary",
         "/p:TF_BUILD=true",
