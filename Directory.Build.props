@@ -164,8 +164,9 @@
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright © 2017-$(CurrentYear) Kritikos IO. All rights reserved.</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageOutputPath>$(MSBuildThisFileDirectory)/packages</PackageOutputPath>
-    <PublishDir>$(MSBuildThisFileDirectory)/upload/$(ProjectName)</PublishDir>
+    <PackageOutputPath Condition="$(PackageOutputPath) == ''">$(MSBuildThisFileDirectory)/packages</PackageOutputPath>
+    <PublishDir Condition="$(PublishDir) == ''">
+      $(MSBuildThisFileDirectory)/upload/$(MSBuildProjectName)</PublishDir>
     <PackageIcon Condition="$(ProjectIconExists) == 'True'">icon.png</PackageIcon>
     <PackageReadmeFile Condition="$(ProjectReadMeExists) == 'True'">README.md</PackageReadmeFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
