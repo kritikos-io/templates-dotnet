@@ -134,6 +134,12 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- Use .NET ruleset for analyzers -->
+  <PropertyGroup Label="Code Analysis Ruleset"
+    Condition="Exists('$(MSBuildThisFileDirectory)\dotnet.ruleset')">
+    <CodeAnalysisRuleset>$(MSBuildThisFileDirectory)\dotnet.ruleset</CodeAnalysisRuleset>
+  </PropertyGroup>
+
   <!-- Use readme as nuget information -->
   <ItemGroup Label="Readme" Condition="$(IsPackable) == 'True' AND $(ProjectReadMe) != ''">
     <None Include="$(ProjectReadMe)" Pack="true" PackagePath="" Visible="true"/>
