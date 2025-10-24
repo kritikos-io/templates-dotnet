@@ -54,6 +54,10 @@
     <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="$(ArtifactsPath) != ''">
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+  </PropertyGroup>
+
   <PropertyGroup Label="Central Package Management">
     <!-- Create Directory.Packages.props file next to solution to use -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
