@@ -62,7 +62,7 @@
     <!-- Create Directory.Packages.props file next to solution to use -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <!-- Any transitive dependency defined below will be used explicitly on the version stated -->
-    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
 
   <PropertyGroup Label="Project Assets">
