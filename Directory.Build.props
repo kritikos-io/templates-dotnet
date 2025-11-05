@@ -33,6 +33,7 @@
     <AnalysisLevel>preview</AnalysisLevel>
     <AnalysisMode>All</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <CodeAnalysisTreatWarningsAsErrors Condition="$(CodeAnalysisTreatWarningsAsErrors) == ''">false</CodeAnalysisTreatWarningsAsErrors>
     <!-- Locked mode should only be enabled on CI -->
     <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</RestoreLockedMode>
     <!-- Use deterministic builds -->
