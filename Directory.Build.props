@@ -161,6 +161,12 @@
     <Content Include="$(MSBuildThisFileDirectory)\xunit.runner.json" Link="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
 
+  <ItemGroup Label="Stylecop Configuration"
+    Condition="Exists('$(MSBuildThisFileDirectory)\stylecop.json')">
+    <Content Include="$(MSBuildThisFileDirectory)\stylecop.json" Link="stylecop.json"
+      CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+
   <!-- Project internals are exposed to projects named $(Project).Tests by default -->
   <ItemGroup
     Condition="@(InternalsVisibleToSuffix->Count()) == 0 AND @(InternalsVisibleTo->Count()) == 0">
