@@ -208,6 +208,13 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup Label="Analyzers">
+    <PackageReference Include="NewStyleCop.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
   <ItemGroup Label="Test Frameworks" Condition="'$(IsTestProject)' == 'true'">
     <PackageReference Include="NSubstitute"/>
     <PackageReference Include="NSubstitute.Analyzers.CSharp">
