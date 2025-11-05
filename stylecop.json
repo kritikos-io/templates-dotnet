@@ -1,0 +1,47 @@
+{
+  "$schema": "https://raw.githubusercontent.com/bjornhellander/NewStyleCopAnalyzers/refs/heads/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "indentation": {
+      "useTabs": false,
+      "indentationSize": 2
+    },
+    "orderingRules": {
+      "usingDirectivesPlacement": "outsideNamespace",
+      "systemUsingDirectivesFirst": true,
+      "blankLinesBetweenUsingGroups": "require",
+      "elementOrder": [
+        "kind",
+        "accessibility",
+        "constant",
+        "static",
+        "readonly"
+      ]
+    },
+    "maintainabilityRules": {
+      "topLevelTypes": [
+        "class",
+        "interface",
+        "struct",
+        "enum"
+      ]
+    },
+    "namingRules": {
+      "allowCommonHungarianPrefixes": false,
+      "includeInferredTupleElementNames": true,
+      "tupleElementNameCasing": "PascalCase"
+    },
+    "layoutRules": {
+      "newlineAtEndOfFile": "require",
+      "allowConsecutiveUsings": false,
+      "allowDoWhileOnClosingBrace": true
+    },
+    "readabilityRules": {
+      "allowBuiltInTypeAliases": false
+    },
+    "documentationRules": {
+      "documentExposedElements": true,
+      "documentationCulture": "en-US",
+      "documentInterfaces": true
+    }
+  }
+}
