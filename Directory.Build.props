@@ -225,6 +225,7 @@
 
   <ItemGroup Label="SourceLink" Condition="$(IsPackable) == 'true'">
     <SourceLinkGiteaHost Include="git.kritikos.io"/>
+    <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
