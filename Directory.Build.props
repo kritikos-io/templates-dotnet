@@ -164,7 +164,7 @@
 
   <ItemGroup Label="Stylecop Configuration"
     Condition="Exists('$(MSBuildThisFileDirectory)\stylecop.json')">
-    <Content Include="$(MSBuildThisFileDirectory)\stylecop.json" Link="stylecop.json"
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)\stylecop.json" Link="stylecop.json"
       CopyToOutputDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
 
