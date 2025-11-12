@@ -165,7 +165,7 @@
   <ItemGroup Label="Stylecop Configuration"
     Condition="Exists('$(MSBuildThisFileDirectory)\stylecop.json')">
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)\stylecop.json" Link="stylecop.json"
-      CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      CopyToOutputDirectory="Never" Visible="false" />
   </ItemGroup>
 
   <!-- Project internals are exposed to projects named $(Project).Tests by default -->
