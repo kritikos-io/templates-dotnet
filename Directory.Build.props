@@ -147,7 +147,7 @@
   </PropertyGroup>
 
   <!-- Use readme as nuget information -->
-  <ItemGroup Label="Readme" Condition="$(IsPackable) == 'True' AND $(ProjectReadMe) != ''">
+  <ItemGroup Label="Readme" Condition="$(IsPackable) == 'True' AND $(ProjectReadMeExists) == 'True'">
     <Content Include="$(ProjectReadMe)" Pack="true" PackagePath="" Visible="true"/>
   </ItemGroup>
 
