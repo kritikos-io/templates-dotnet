@@ -69,18 +69,18 @@
 
   <PropertyGroup Label="Project Assets">
     <ProjectIcon Condition="Exists('$(MSBuildThisFileDirectory)\icon.png')">
-      $(MSBuildThisFileDirectory)\icon.png
+      $(MSBuildThisFileDirectory)icon.png
     </ProjectIcon>
     <ProjectIcon Condition="Exists('$(MSBuildProjectDirectory)\icon.png')">
-      $(MSBuildProjectDirectory)\icon.png
+      $(MSBuildProjectDirectory)icon.png
     </ProjectIcon>
     <ProjectIconExists Condition="$(ProjectIcon) != ''">true</ProjectIconExists>
 
     <ProjectReadMe Condition="Exists('$(MSBuildThisFileDirectory)\README.md')">
-      $(MSBuildThisFileDirectory)\README.md
+      $(MSBuildThisFileDirectory)README.md
     </ProjectReadMe>
     <ProjectReadMe Condition="Exists('$(MSBuildProjectDirectory)\README.md')">
-      $(MSBuildProjectDirectory)\README.md
+      $(MSBuildProjectDirectory)README.md
     </ProjectReadMe>
     <ProjectReadMeExists Condition="$(ProjectReadMe) != ''">true</ProjectReadMeExists>
   </PropertyGroup>
@@ -148,7 +148,7 @@
 
   <!-- Use readme as nuget information -->
   <ItemGroup Label="Readme" Condition="$(IsPackable) == 'True' AND $(ProjectReadMe) != ''">
-    <None Include="$(ProjectReadMe)" Pack="true" PackagePath="" Visible="true"/>
+    <Content Include="$(ProjectReadMe)" Pack="true" PackagePath="" Visible="true"/>
   </ItemGroup>
 
   <!-- Use nuget icon -->
