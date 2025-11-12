@@ -148,12 +148,12 @@
 
   <!-- Use readme as nuget information -->
   <ItemGroup Label="Readme" Condition="$(IsPackable) == 'True' AND $(ProjectReadMeExists) == 'True'">
-    <Content Include="$(ProjectReadMe)" Pack="true" PackagePath="" Visible="true"/>
+    <Content Include="$(ProjectReadMe)" PackagePath="README.md" />
   </ItemGroup>
 
   <!-- Use nuget icon -->
   <ItemGroup Label="Icon" Condition="$(IsPackable) == 'True' AND $(ProjectIconExists) == 'True'">
-    <None Include="$(ProjectIcon)" Pack="true" PackagePath="icon.png" Visible="false"/>
+    <Content Include="$(ProjectIcon)" Pack="true" PackagePath="icon.png" Visible="false"/>
   </ItemGroup>
 
   <!-- Uses pretty xUnit configuration -->
