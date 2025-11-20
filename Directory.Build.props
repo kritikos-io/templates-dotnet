@@ -97,7 +97,6 @@
   </PropertyGroup>
 
   <PropertyGroup Label="OpenAPI Analyzers" Condition="'$(UsingMicrosoftNETSdkWeb)' == 'True'">
-    <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
     <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/OpenApi</OpenApiDocumentsDirectory>
   </PropertyGroup>
 
