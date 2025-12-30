@@ -21,7 +21,7 @@
     <File Path="samples\Directory.Build.props" />
   </Folder>
   <Folder Name="/src/">
-    <File Path="src\Directory.build.props" />
+    <File Path="src\Directory.Build.props" />
   </Folder>
   <Folder Name="/tests/">
     <File Path="tests\Directory.Build.props" />
