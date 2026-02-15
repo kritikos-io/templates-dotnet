@@ -49,7 +49,6 @@
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
     <GenerateRequiresPreviewFeaturesAttribute>False</GenerateRequiresPreviewFeaturesAttribute>
     <DefaultItemExcludes>$(DefaultItemExcludes);*.log;*.binlog</DefaultItemExcludes>
-    <GenerateSBOM>true</GenerateSBOM>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(ArtifactsPath) == '' AND $(DisableCustomArtifactsPath) != 'true'">
@@ -131,6 +130,7 @@
   <!-- Mark assemblies as CLS compliant so the compiler warns on non compliant usage -->
   <PropertyGroup Condition="$(IsPackable) == 'true'">
     <ClsCompliant>true</ClsCompliant>
+    <GenerateSBOM>true</GenerateSBOM>
   </PropertyGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.CLSCompliant">
