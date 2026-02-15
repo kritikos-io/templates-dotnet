@@ -6,7 +6,7 @@
       "indentationSize": 2
     },
     "orderingRules": {
-      "usingDirectivesPlacement": "insideNamespace",
+      "usingDirectivesPlacement": "outsideNamespace",
       "systemUsingDirectivesFirst": true,
       "blankLinesBetweenUsingGroups": "require",
       "elementOrder": [
@@ -22,7 +22,6 @@
         "class",
         "interface",
         "struct",
-        "delegate",
         "enum"
       ]
     },
