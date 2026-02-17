@@ -6,7 +6,7 @@
       "indentationSize": 2
     },
     "orderingRules": {
-      "usingDirectivesPlacement": "outsideNamespace",
+      "usingDirectivesPlacement": "insideNamespace",
       "systemUsingDirectivesFirst": true,
       "blankLinesBetweenUsingGroups": "require",
       "elementOrder": [
