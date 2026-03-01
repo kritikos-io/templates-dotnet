@@ -10,7 +10,7 @@
     <!-- Suppresses display of the sign-on banner -->
     <NoLogo>true</NoLogo>
     <!-- Prepend organization name to default namespace -->
-    <RootNamespace>Kritikos.$(MSBuildProjectName)</RootNamespace>
+    <RootNamespace>Cognify.$(MSBuildProjectName)</RootNamespace>
     <!-- Enable global usings based on project type -->
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Generate documentation file and ignore warnings for undocumented elements -->
@@ -176,10 +176,10 @@
 
   <PropertyGroup Label="Package">
     <PackageId>$(RootNamespace)</PackageId>
-    <Company>Kritikos IO</Company>
-    <Authors>Alexandros Kritikos</Authors>
+    <Company>Cognify</Company>
+    <Authors>Elisa Servidio, Dimitrios Tsapetis, Alexandros Kritikos</Authors>
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
-    <Copyright>Copyright © 2017-$(CurrentYear) Kritikos IO. All rights reserved.</Copyright>
+    <Copyright>Copyright © 2024-$(CurrentYear) Cognify. All rights reserved.</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageOutputPath Condition="$(PackageOutputPath) == ''">$(MSBuildThisFileDirectory)/packages</PackageOutputPath>
     <PublishDir Condition="$(PublishDir) == ''">
