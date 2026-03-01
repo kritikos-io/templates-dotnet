@@ -177,7 +177,7 @@
   <PropertyGroup Label="Package">
     <PackageId>$(RootNamespace)</PackageId>
     <Company>Cognify</Company>
-    <Authors>Elisa Servidio, Dimitrios Tsapetis, Alexandros Kritikos</Authors>
+    <Authors>Elisa Servidio, Dimitrios Tsapetis, Alexandros Kritikos, Stefanos Katsikas, Katerina Pouspourika, Antonia Tsatsouli</Authors>
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright © 2024-$(CurrentYear) Cognify. All rights reserved.</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
