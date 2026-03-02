@@ -1,8 +1,24 @@
 is_global = true
 
 # Ruleset replacement
-dotnet_diagnostic.CA2007.severity = none # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2007
+# C# compiler diagnostics
+dotnet_diagnostic.CS1573.severity = none # Missing XML comment for parameter
+dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
+dotnet_diagnostic.CS2008.severity = none # No source files specified
+
+# Code quality analyzers
 dotnet_diagnostic.CA1303.severity = none # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1303
+dotnet_diagnostic.CA1707.severity = none # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1707
+dotnet_diagnostic.CA1848.severity = none # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1848
+dotnet_diagnostic.CA2007.severity = none # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2007
+
+# Serilog analyzers
+dotnet_diagnostic.Serilog004.severity = none # Serilog context property accessor
+
+# StyleCop analyzers
+dotnet_diagnostic.SA1101.severity = none # Prefix local calls with this
+dotnet_diagnostic.SA1633.severity = none # File must have header
+dotnet_diagnostic.SA1649.severity = none # File name must match first type name
 
 # Organize usings
 dotnet_sort_system_directives_first = true
