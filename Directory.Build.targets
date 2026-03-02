@@ -1,5 +1,5 @@
 <Project>
-  <Target Name="RestoreNpmAssets">
+  <Target Name="RestoreNpmAssets" Condition="Exists('$(MSBuildProjectDirectory)/package.json')" BeforeTargets="Restore">
     <Exec Command="npm install" />
   </Target>
 

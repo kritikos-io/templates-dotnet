@@ -44,8 +44,6 @@
     <ClsCompliant>false</ClsCompliant>
     <!-- Defaults to checked context for math operations, throws OverflowException when needed -->
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
-    <ApplicationVisualStyles>true</ApplicationVisualStyles>
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
     <GenerateRequiresPreviewFeaturesAttribute>False</GenerateRequiresPreviewFeaturesAttribute>
     <DefaultItemExcludes>$(DefaultItemExcludes);*.log;*.binlog</DefaultItemExcludes>
@@ -99,7 +97,12 @@
     <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/OpenApi</OpenApiDocumentsDirectory>
   </PropertyGroup>
 
-  <PropertyGroup Label="MAUI Features">
+  <PropertyGroup Condition="$(UseWindowsForms) == 'true'">
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationVisualStyles>true</ApplicationVisualStyles>
+  </PropertyGroup>
+
+  <PropertyGroup Label="MAUI Features" Condition="$(UseMaui) == 'true'">
     <TrimMode>Full</TrimMode>
     <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
     <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
