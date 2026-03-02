@@ -42,11 +42,14 @@
     <!-- Use latest language version supported by the SDK -->
     <LangVersion>preview</LangVersion>
     <ClsCompliant>false</ClsCompliant>
-    <!-- Defaults to checked context for math operations, throws OverflowException when needed -->
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
     <GenerateRequiresPreviewFeaturesAttribute>False</GenerateRequiresPreviewFeaturesAttribute>
     <DefaultItemExcludes>$(DefaultItemExcludes);*.log;*.binlog</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Defaults to checked context for math operations, throws OverflowException when needed -->
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(ArtifactsPath) == '' AND $(DisableCustomArtifactsPath) != 'true'">
