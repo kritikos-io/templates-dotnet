@@ -36,11 +36,6 @@
         -> [assembly: InternalsVisibleTo("ClassLibrary1.FunctionalTests")]
      -->
 
-    <!-- Add default suffix for tests -->
-    <ItemGroup>
-      <InternalsVisibleToSuffix Include=".Tests" />
-    </ItemGroup>
-
     <!-- Handle InternalsVisibleTo -->
     <ItemGroup Condition="'@(InternalsVisibleTo->Count())' &gt; 0">
       <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
