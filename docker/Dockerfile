@@ -21,12 +21,19 @@ WORKDIR /source
 
 FROM sdk AS restore
 
-COPY --link Directory.* stylecop.json xunit.runner.json *.sln *.slnx *.config ./
+COPY --link Directory.* .globalconfig stylecop.json xunit.runner.json *.sln *.slnx *.config ./
 COPY --link --parents ./**.csproj ./**/packages.lock.json ./
 
 RUN --mount=type=cache,target=/root/.nuget/packages \
   dotnet restore && \
   dotnet restore --runtime ${RUNTIME_ID}
+
+FROM sdk AS gitversion
+RUN --mount=type=cache,target=/root/.nuget/packages dotnet tool install --global GitVersion.Tool
+ENV PATH="${PATH}:/root/.dotnet/tools"
+COPY --link --parents **/GitVersion.yml ./
+COPY --link .git/ ./.git/
+RUN dotnet-gitversion /output json > /version.json
 
 FROM restore AS build
 ARG CONFIGURATION
@@ -34,10 +41,26 @@ ARG CONFIGURATION
 COPY --link src/ src/
 COPY --link tests/ tests/
 COPY --link samples/ samples/
-COPY --link .git/ ./.git/
+COPY --link --from=gitversion /version.json ./version.json
+
+RUN GV_MAJOR=$(grep -o '"Major": *[0-9]*' version.json | grep -o '[0-9]*') && \
+  GV_MINOR=$(grep -o '"Minor": *[0-9]*' version.json | grep -o '[0-9]*') && \
+  GV_PATCH=$(grep -o '"Patch": *[0-9]*' version.json | grep -o '[0-9]*') && \
+  GV_SEMVER=$(grep -o '"SemVer": *"[^"]*"' version.json | cut -d'"' -f4) && \
+  GV_FULLSEMVER=$(grep -o '"FullSemVer": *"[^"]*"' version.json | cut -d'"' -f4) && \
+  GV_INFORMATIONAL=$(grep -o '"InformationalVersion": *"[^"]*"' version.json | cut -d'"' -f4) && \
+  { echo "GV_MAJOR=${GV_MAJOR}"; \
+    echo "GV_MINOR=${GV_MINOR}"; \
+    echo "GV_PATCH=${GV_PATCH}"; \
+    echo "GV_SEMVER=${GV_SEMVER}"; \
+    echo "GV_FULLSEMVER=${GV_FULLSEMVER}"; \
+    echo "GV_INFORMATIONAL=${GV_INFORMATIONAL}"; \
+    echo "VERSION_PROPS=\"/p:Version=\${GV_SEMVER} /p:AssemblyVersion=\${GV_MAJOR}.\${GV_MINOR}.\${GV_PATCH}.0 /p:FileVersion=\${GV_MAJOR}.\${GV_MINOR}.\${GV_PATCH}.0 /p:InformationalVersion=\${GV_INFORMATIONAL} /p:PackageVersion=\${GV_FULLSEMVER}\""; \
+  } > /source/version.env
 
 RUN --mount=type=cache,target=/root/.nuget/packages \
-  dotnet build --no-restore --configuration ${CONFIGURATION}
+  . /source/version.env && \
+  eval dotnet build --no-restore --configuration ${CONFIGURATION} ${VERSION_PROPS}
 
 FROM build AS test
 ARG CONFIGURATION
@@ -51,13 +74,16 @@ ARG RUNTIME_BASE
 ENV PROJECT=src/${PUBLISHED_PROJECT}/${PUBLISHED_PROJECT}.csproj
 
 RUN --mount=type=cache,target=/root/.nuget/packages \
+  . /source/version.env && \
   if [ "${RUNTIME_BASE}" = "self-contained" ]; then \
-  dotnet publish --configuration ${CONFIGURATION} \
+  eval dotnet publish --configuration ${CONFIGURATION} \
   --self-contained --runtime ${RUNTIME_ID} \
+  ${VERSION_PROPS} \
   -o /app/publish ${PROJECT}; \
   else \
-  dotnet publish --configuration ${CONFIGURATION} \
+  eval dotnet publish --configuration ${CONFIGURATION} \
   --no-self-contained --runtime ${RUNTIME_ID} \
+  ${VERSION_PROPS} \
   -o /app/publish ${PROJECT}; \
   fi
 
