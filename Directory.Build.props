@@ -16,7 +16,6 @@
     <!-- Generate documentation file and ignore warnings for undocumented elements -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PublishDocumentationFile>true</PublishDocumentationFile>
-    <NoWarn>$(NoWarn);1591;1701;1702;NU1507</NoWarn>
     <!-- Error out upon trying to package projects marked as not packable -->
     <WarnOnPackingNonPackableProject>false</WarnOnPackingNonPackableProject>
     <!-- Disable warnings on preview SDK versions -->
@@ -33,12 +32,13 @@
     <AnalysisLevel>preview</AnalysisLevel>
     <AnalysisMode>All</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <CodeAnalysisTreatWarningsAsErrors Condition="$(CodeAnalysisTreatWarningsAsErrors) == ''">false</CodeAnalysisTreatWarningsAsErrors>
+    <TreatWarningsAsErrors Condition="'$(TreatWarningsAsErrors)' == ''">true</TreatWarningsAsErrors>
+    <CodeAnalysisTreatWarningsAsErrors>$(CodeAnalysisTreatWarningsAsErrors)</CodeAnalysisTreatWarningsAsErrors>
     <!-- Locked mode should only be enabled on CI -->
     <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</RestoreLockedMode>
     <!-- Use deterministic builds -->
-    <Deterministic Condition="'$(ContinuousIntegrationBuild)' == 'True'">true</Deterministic>
-    <DeterministicSourcePaths Condition="'$(IsTestProject)' == 'true'">false</DeterministicSourcePaths>
+    <DeterministicSourcePaths>true</DeterministicSourcePaths>
+    <PathMap Condition="$(ArtifactsPath) != ''">$(ArtifactsPath)=/_/generated</PathMap>
     <!-- Use latest language version supported by the SDK -->
     <LangVersion>preview</LangVersion>
     <ClsCompliant>false</ClsCompliant>
@@ -64,7 +64,7 @@
     <!-- Create Directory.Packages.props file next to solution to use -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <!-- Any transitive dependency defined below will be used explicitly on the version stated -->
-    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
 
   <PropertyGroup Label="Project Assets">
@@ -113,24 +113,6 @@
 
   <PropertyGroup Label="Entity Framework Core - Compiled Model generation">
     <EFOptimizeContext>true</EFOptimizeContext>
-    <EFScaffoldModelStage>publish</EFScaffoldModelStage>
-  </PropertyGroup>
-
-  <!-- Sets deterministic source paths for CI builds -->
-  <PropertyGroup Label="CI Build">
-    <!--
-    https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#system-variables -->
-    <ContinuousIntegrationBuild Condition="'$(TF_BUILD)' == 'true'">true</ContinuousIntegrationBuild>
-
-    <!--
-    https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables -->
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-
-    <!-- https://docs.gitlab.com/ee/ci/variables/predefined_variables.html -->
-    <ContinuousIntegrationBuild Condition="'$(GITLAB_CI)' == 'true'">true</ContinuousIntegrationBuild>
-
-    <!-- https://www.appveyor.com/docs/environment-variables/ -->
-    <ContinuousIntegrationBuild Condition="'$(APPVEYOR)' == 'True'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <!-- Mark assemblies as CLS compliant so the compiler warns on non compliant usage -->
