@@ -8,7 +8,6 @@
     <PackAsTool>false</PackAsTool>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <RunSettingsFilePath>$(MSBuildThisFileDirectory)\.runsettings</RunSettingsFilePath>
-    <NoWarn>$(NoWarn);CA1707</NoWarn>
   </PropertyGroup>
 
   <ItemGroup Label="Hide Assets">
@@ -51,13 +50,104 @@
   </Target>
 
   <Target Name="CreateReleaseNotesFromFile" BeforeTargets="GenerateNuspec"
-    Condition="Exists('$(MSBuildThisFileDirectory)changes.log')">
-    <ReadLinesFromFile File="$(MSBuildThisFileDirectory)changes.log">
+    DependsOnTargets="GenerateChangelogFromGit"
+    Condition="Exists('$(ChangeLogPath)')">
+    <ReadLinesFromFile File="$(ChangeLogPath)">
       <Output TaskParameter="Lines" ItemName="ReleaseNoteLines" />
     </ReadLinesFromFile>
     <PropertyGroup>
       <PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
     </PropertyGroup>
+  </Target>
+
+  <PropertyGroup>
+    <ChangeLogPath Condition="'$(ChangeLogPath)' == ''">$(BaseIntermediateOutputPath)changes.log</ChangeLogPath>
+    <ChangeLogFromRef Condition="'$(ChangeLogFromRef)' == ''"></ChangeLogFromRef>
+    <ChangeLogCommitLimit Condition="'$(ChangeLogCommitLimit)' == ''">100</ChangeLogCommitLimit>
+    <ChangeLogUpstreamMergePattern Condition="'$(ChangeLogUpstreamMergePattern)' == ''">from .*/</ChangeLogUpstreamMergePattern>
+    <!-- Set to false to exclude commits from ProjectReference directories in the changelog -->
+    <ChangeLogIncludeReferences Condition="'$(ChangeLogIncludeReferences)' == ''">true</ChangeLogIncludeReferences>
+  </PropertyGroup>
+
+  <Target Name="GenerateChangelogFromGit"
+    BeforeTargets="GenerateNuspec"
+    Condition="'$(GenerateChangelogFromGit)' != 'false' AND Exists('$(MSBuildThisFileDirectory).git')">
+    <!-- #1: nearest reachable tag from HEAD, not globally newest; capture exit code to guard against no-tag repos -->
+    <Exec Command="git describe --tags --abbrev=0"
+      WorkingDirectory="$(MSBuildThisFileDirectory)"
+      ConsoleToMsBuild="true"
+      IgnoreExitCode="true"
+      StandardErrorImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitLastTagRaw" />
+      <Output TaskParameter="ExitCode" PropertyName="GitDescribeExitCode" />
+    </Exec>
+
+    <Exec Command="git rev-list --first-parent --merges -n 1 HEAD"
+      WorkingDirectory="$(MSBuildThisFileDirectory)"
+      ConsoleToMsBuild="true"
+      IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitLastMergeRaw" />
+    </Exec>
+
+    <!-- #4: configurable upstream merge pattern via ChangeLogUpstreamMergePattern -->
+    <Exec Command="git rev-list --first-parent --merges -n 1 --grep=&quot;$(ChangeLogUpstreamMergePattern)&quot; HEAD"
+      WorkingDirectory="$(MSBuildThisFileDirectory)"
+      ConsoleToMsBuild="true"
+      IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitLastUpstreamMergeRaw" />
+    </Exec>
+
+    <PropertyGroup>
+      <!-- only accept the tag when git describe actually succeeded -->
+      <GitLastTag Condition="'$(GitDescribeExitCode)' == '0'">$([System.String]::Copy('$(GitLastTagRaw)').Trim())</GitLastTag>
+      <GitLastUpstreamMergeCommit>$([System.String]::Copy('$(GitLastUpstreamMergeRaw)').Trim())</GitLastUpstreamMergeCommit>
+      <GitLastMergeCommit>$([System.String]::Copy('$(GitLastMergeRaw)').Trim())</GitLastMergeCommit>
+      <ChangeLogRange Condition="'$(ChangeLogFromRef)' != ''">$(ChangeLogFromRef)..HEAD</ChangeLogRange>
+      <ChangeLogRange Condition="'$(ChangeLogRange)' == '' AND '$(GitLastTag)' != ''">$(GitLastTag)..HEAD</ChangeLogRange>
+      <ChangeLogRange Condition="'$(ChangeLogRange)' == '' AND '$(GitLastUpstreamMergeCommit)' != ''">$(GitLastUpstreamMergeCommit)..HEAD</ChangeLogRange>
+      <ChangeLogRange Condition="'$(ChangeLogRange)' == '' AND '$(GitLastMergeCommit)' != ''">$(GitLastMergeCommit)..HEAD</ChangeLogRange>
+      <!-- #3: subject-only; space before %s would split the arg on Windows cmd, so bullet is added by MSBuild transform below -->
+      <GitPrettyFormat Condition="$([MSBuild]::IsOSPlatform('Windows')) == 'true'">--pretty=format:%25%25s</GitPrettyFormat>
+      <GitPrettyFormat Condition="$([MSBuild]::IsOSPlatform('Windows')) != 'true'">--pretty=format:%25s</GitPrettyFormat>
+      <GitLogBaseCommand>git --no-pager log --no-merges $(GitPrettyFormat)</GitLogBaseCommand>
+    </PropertyGroup>
+
+    <!-- Collect directories for path scoping; optionally include ProjectReference paths -->
+    <ItemGroup>
+      <ChangeLogPaths Include="&quot;$(MSBuildProjectDirectory)&quot;" />
+      <ChangeLogPaths Condition="'$(ChangeLogIncludeReferences)' == 'true'"
+        Include="@(ProjectReference->'&quot;%(RootDir)%(Directory).&quot;')" />
+    </ItemGroup>
+    <PropertyGroup>
+      <ChangeLogPathSpec>@(ChangeLogPaths, ' ')</ChangeLogPathSpec>
+    </PropertyGroup>
+
+    <Exec Condition="'$(ChangeLogRange)' != ''"
+      Command="$(GitLogBaseCommand) $(ChangeLogRange) -- $(ChangeLogPathSpec)"
+      WorkingDirectory="$(MSBuildThisFileDirectory)"
+      ConsoleToMsBuild="true">
+      <Output TaskParameter="ConsoleOutput" ItemName="ChangeLogLines" />
+    </Exec>
+
+    <Exec Condition="'$(ChangeLogRange)' == ''"
+      Command="$(GitLogBaseCommand) --max-count=$(ChangeLogCommitLimit) -- $(ChangeLogPathSpec)"
+      WorkingDirectory="$(MSBuildThisFileDirectory)"
+      ConsoleToMsBuild="true">
+      <Output TaskParameter="ConsoleOutput" ItemName="ChangeLogLines" />
+    </Exec>
+
+    <!-- #3: prepend bullet here, safely, with no shell involved; skip writing an empty file -->
+    <WriteLinesToFile Condition="@(ChangeLogLines->Count()) &gt; 0"
+      File="$(ChangeLogPath)"
+      Lines="@(ChangeLogLines->'- %(Identity)')"
+      Overwrite="true"
+      WriteOnlyWhenDifferent="true"
+      Encoding="UTF-8" />
+
+    <Message Importance="High" Condition="'$(ChangeLogRange)' != ''"
+      Text="Generated changelog at $(ChangeLogPath) using range $(ChangeLogRange)." />
+    <Message Importance="High" Condition="'$(ChangeLogRange)' == ''"
+      Text="Generated changelog at $(ChangeLogPath) using last $(ChangeLogCommitLimit) commits." />
   </Target>
 
   <Import
