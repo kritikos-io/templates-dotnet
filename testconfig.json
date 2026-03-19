@@ -1,0 +1,21 @@
+{
+  "platformOptions": {
+
+  },
+  "codeCoverage": {
+    "ExcludeAssembliesWithoutSources": "MissingAll",
+    "IncludeTestAssembly": false,
+    "SkipAutoProperties": true,
+    "AttributesExclude": [
+      "^System\\.ObsoleteAttribute$",
+      "^System\\.CodeDom\\.Compiler\\.GeneratedCodeAttribute$"
+    ],
+    "SourcesExclude": [
+      ".*\\\\tests\\\\.*\\.cs$",
+      ".*\\\\samples\\\\.*\\.cs$"
+    ]
+  },
+  "tunit": {
+    "long-running-test-seconds": 5
+  }
+}
