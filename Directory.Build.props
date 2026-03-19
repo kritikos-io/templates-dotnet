@@ -58,6 +58,8 @@
 
   <PropertyGroup Condition="$(ArtifactsPath) != ''">
     <UseArtifactsOutput>true</UseArtifactsOutput>
+    <PackageOutputPath>$(ArtifactsPath)/nuget</PackageOutputPath>
+    <PublishDir>$(ArtifactsPath)/upload/$(MSBuildProjectName)</PublishDir>
   </PropertyGroup>
 
   <PropertyGroup Label="Central Package Management">
