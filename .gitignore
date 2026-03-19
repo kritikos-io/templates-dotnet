@@ -1139,7 +1139,6 @@ TestResults
 
 # Visual Studio Code
 !*.code-workspace
-!.vscode/tasks-*.json
 
 ## Web Assets managed by libman
 **/wwwroot/dist/*
@@ -1150,11 +1149,7 @@ TestResults
 *.coverage.xml
 
 ## Public Assets
-packages/*
-upload/*
-!upload/.gitkeep
-!packages/.gitkeep
 !artifacts/
-artifacts/*
-!artifacts/.gitkeep
-**/OpenApi/*.json
+artifacts/**
+!artifacts/**/
+!artifacts/**/.gitkeep
