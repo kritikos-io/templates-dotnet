@@ -33,7 +33,7 @@
     "layoutRules": {
       "newlineAtEndOfFile": "require",
       "allowConsecutiveUsings": false,
-      "allowDoWhileOnClosingBrace": true
+      "allowDoWhileOnClosingBrace": false
     },
     "readabilityRules": {
       "allowBuiltInTypeAliases": false
