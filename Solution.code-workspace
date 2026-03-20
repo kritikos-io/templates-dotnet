@@ -11,6 +11,32 @@
       "ms-dotnettools.csdevkit",
       "ms-vscode-remote.remote-containers",
       "seatonjiang.gitmoji-vscode",
+      "redhat.vscode-xml"
     ]
+  },
+  "settings": {
+    "files.associations": {
+      "nuget.config": "xml"
+    },
+    "json.schemas": [
+      {
+        "fileMatch": [
+          "xunit.runner.json"
+        ],
+        "url": "https://xunit.net/schema/current/xunit.runner.schema.json"
+      },
+      {
+        "fileMatch": [
+          "stylecop.json"
+        ],
+        "url": "https://raw.githubusercontent.com/bjornhellander/NewStyleCopAnalyzers/refs/heads/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json"
+      }
+    ],
+    "editor.wordWrap": "on",
+    "[xml]": {
+      "editor.defaultFormatter": "redhat.vscode-xml"
+    },
+    "xml.format.maxLineWidth": 0,
+    "xml.format.splitAttributes": "preserve",
   }
 }
