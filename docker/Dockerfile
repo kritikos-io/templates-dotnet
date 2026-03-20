@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.20
-ARG RUNTIME_BASE=app
+ARG RUNTIME_BASE=web
 ARG CONFIGURATION=Release
 ARG DOTNET_VERSION=10.0
 ARG RUNTIME_ID=linux-musl-x64
@@ -21,12 +21,13 @@ WORKDIR /source
 
 FROM sdk AS restore
 
-COPY --link Directory.* .globalconfig stylecop.json xunit.runner.json *.sln *.slnx *.config ./
+COPY --link .editorconfig .globalconfig global.json icon.png nuget.config *.slnx *.sln *.sln.DotSettings stylecop.json testconfig.json xunit.runner.json ./
+COPY --link --parents ./**Directory*.props ./**Directory.*.targets ./
 COPY --link --parents ./**.csproj ./**/packages.lock.json ./
+RUN ls -lR .
 
 RUN --mount=type=cache,target=/root/.nuget/packages \
-  dotnet restore && \
-  dotnet restore --runtime ${RUNTIME_ID}
+  dotnet restore
 
 FROM sdk AS gitversion
 RUN --mount=type=cache,target=/root/.nuget/packages dotnet tool install --global GitVersion.Tool
@@ -38,6 +39,7 @@ RUN dotnet-gitversion /output json > /version.json
 FROM restore AS build
 ARG CONFIGURATION
 
+COPY LICENSE.md README.md ./
 COPY --link src/ src/
 COPY --link tests/ tests/
 COPY --link samples/ samples/
@@ -65,7 +67,8 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
 FROM build AS test
 ARG CONFIGURATION
 
-RUN dotnet test --no-build --configuration ${CONFIGURATION}
+RUN --mount=type=cache,target=/root/.nuget/packages \
+  dotnet test --no-build --configuration ${CONFIGURATION}
 
 FROM test AS publish
 ARG CONFIGURATION
@@ -75,17 +78,22 @@ ARG PUBLISH_READY_TO_RUN=false
 ENV PROJECT=src/${PUBLISHED_PROJECT}/${PUBLISHED_PROJECT}.csproj
 
 RUN --mount=type=cache,target=/root/.nuget/packages \
+  dotnet restore --runtime ${RUNTIME_ID} ${PROJECT}
+
+RUN --mount=type=cache,target=/root/.nuget/packages \
   . /source/version.env && \
   if [ "${RUNTIME_BASE}" = "self-contained" ]; then \
   eval dotnet publish --configuration ${CONFIGURATION} \
   --self-contained --runtime ${RUNTIME_ID} \
   /p:PublishReadyToRun=${PUBLISH_READY_TO_RUN} \
+  /p:OpenApiGenerateDocuments=false \
   ${VERSION_PROPS} \
   -o /app/publish ${PROJECT}; \
   else \
   eval dotnet publish --configuration ${CONFIGURATION} \
   --no-self-contained --runtime ${RUNTIME_ID} \
   /p:PublishReadyToRun=${PUBLISH_READY_TO_RUN} \
+  /p:OpenApiGenerateDocuments=false \
   ${VERSION_PROPS} \
   -o /app/publish ${PROJECT}; \
   fi
