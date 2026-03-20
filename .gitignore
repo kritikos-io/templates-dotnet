@@ -1153,3 +1153,6 @@ TestResults
 artifacts/**
 !artifacts/**/
 !artifacts/**/.gitkeep
+
+## Machine-specific overrides
+compose.override.yaml

@@ -79,10 +79,10 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
 FROM node:lts-alpine AS openapi-lint
 RUN npm install -g @stoplight/spectral-cli
 WORKDIR /openapi
-COPY --link .spectral.yaml .
+COPY --link .spectral.yaml /tmp/.spectral.yaml
 COPY --link --from=build /source/artifacts/OpenApi/ .
 RUN if ls *.json 1>/dev/null 2>&1; then \
-  spectral lint ./*.json --fail-severity=error; \
+  spectral lint ./*.json -r /tmp/.spectral.yaml --fail-severity=error; \
   else \
   echo "No OpenAPI documents found, skipping lint"; \
   fi
