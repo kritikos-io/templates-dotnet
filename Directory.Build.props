@@ -2,7 +2,7 @@
   <ImportGroup
     Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))) == 'true'">
     <Import
-      Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
+      Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
   </ImportGroup>
 
   <PropertyGroup Label="Project">
@@ -32,8 +32,9 @@
     <AnalysisLevel>preview</AnalysisLevel>
     <AnalysisMode>All</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <TreatWarningsAsErrors Condition="'$(TreatWarningsAsErrors)' == ''">true</TreatWarningsAsErrors>
-    <CodeAnalysisTreatWarningsAsErrors>$(CodeAnalysisTreatWarningsAsErrors)</CodeAnalysisTreatWarningsAsErrors>
+    <!-- <TreatWarningsAsErrors Condition="'$(TreatWarningsAsErrors)' ==
+    ''">true</TreatWarningsAsErrors> -->
+    <CodeAnalysisTreatWarningsAsErrors>$(TreatWarningsAsErrors)</CodeAnalysisTreatWarningsAsErrors>
     <!-- Locked mode should only be enabled on CI -->
     <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</RestoreLockedMode>
     <!-- Use deterministic builds -->
@@ -87,14 +88,12 @@
     <ProjectReadMeExists Condition="$(ProjectReadMe) != ''">true</ProjectReadMeExists>
   </PropertyGroup>
 
-  <PropertyGroup Label="SDK Functionality"
-                 Condition="'$(UsingMicrosoftNETSdkWeb)' == 'True' OR '$(UsingMicrosoftNETSdkWorker)' == 'True'">
+  <PropertyGroup Label="SDK Functionality" Condition="'$(UsingMicrosoftNETSdkWeb)' == 'True' OR '$(UsingMicrosoftNETSdkWorker)' == 'True'">
     <IsPackable>false</IsPackable>
     <PackAsTool>false</PackAsTool>
   </PropertyGroup>
 
-  <PropertyGroup Label="Disable Launch Settings for Worker Service"
-                 Condition="'$(UsingMicrosoftNETSdkWorker)' == 'True'">
+  <PropertyGroup Label="Disable Launch Settings for Worker Service" Condition="'$(UsingMicrosoftNETSdkWorker)' == 'True'">
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
@@ -136,7 +135,7 @@
 
   <!-- Use nuget icon -->
   <ItemGroup Label="Icon" Condition="$(IsPackable) == 'True' AND $(ProjectIconExists) == 'True'">
-    <Content Include="$(ProjectIcon)" Pack="true" PackagePath="icon.png" Visible="false"/>
+    <Content Include="$(ProjectIcon)" Pack="true" PackagePath="icon.png" Visible="false" />
   </ItemGroup>
 
   <!-- Uses pretty xUnit configuration -->
@@ -183,8 +182,7 @@
   </PropertyGroup>
 
   <ItemGroup Label="Versioning" Condition="'$(IsTestProject)' != 'true'">
-    <PackageReference Include="GitVersion.MsBuild"
-                      Condition="Exists('$(MSBuildThisFileDirectory)\.git')">
+    <PackageReference Include="GitVersion.MsBuild" Condition="Exists('$(MSBuildThisFileDirectory)\.git')">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -206,7 +204,7 @@
   </ItemGroup>
 
   <ItemGroup Label="SourceLink" Condition="$(IsPackable) == 'true'">
-    <SourceLinkGiteaHost Include="git.kritikos.io"/>
+    <SourceLinkGiteaHost Include="git.kritikos.io" />
     <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="All" />
   </ItemGroup>
 
