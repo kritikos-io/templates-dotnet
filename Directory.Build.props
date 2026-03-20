@@ -64,6 +64,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Central Package Management">
+    <NoWarn>$(NoWarn);NU1506</NoWarn>
     <!-- Create Directory.Packages.props file next to solution to use -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <!-- Any transitive dependency defined below will be used explicitly on the version stated -->
