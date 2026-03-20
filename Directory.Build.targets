@@ -3,18 +3,35 @@
     <Exec Command="npm install" />
   </Target>
 
-  <PropertyGroup Label="Test Functionality" Condition="$(IsTestProject) == 'true'">
-    <IsPackable>false</IsPackable>
-    <PackAsTool>false</PackAsTool>
-    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
-    <RunSettingsFilePath>$(MSBuildThisFileDirectory)\.runsettings</RunSettingsFilePath>
-  </PropertyGroup>
-
   <ItemGroup Label="Hide Assets">
     <None Update="icon.png" Visible="false" />
     <None Update="..\..\README.md" Visible="false" />
     <None Update="packages.lock.json" Visible="false" />
   </ItemGroup>
+
+  <ItemGroup
+    Condition="@(PackageReference->WithMetadataValue('Identity','Microsoft.AspNetCore.OpenApi')->Count()) &gt; 0">
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup
+    Condition="@(PackageReference->WithMetadataValue('Identity','NSubstitute')->Count()) &gt; 0">
+    <PackageReference Include="NSubstitute.Analyzers.CSharp">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <Target Name="RenameOpenApiDocuments"
+    AfterTargets="GenerateOpenApiDocuments"
+    Condition="'$(OpenApiDocumentsDirectory)' != ''">
+    <Move SourceFiles="$(OpenApiDocumentsDirectory)/$(MSBuildProjectName).json"
+      DestinationFiles="$(OpenApiDocumentsDirectory)/$(MSBuildProjectName)-v1.json"
+      Condition="Exists('$(OpenApiDocumentsDirectory)/$(MSBuildProjectName).json')" />
+  </Target>
 
   <Target Name="AddInternalsVisibleTo" BeforeTargets="BeforeCompile">
     <!--
