@@ -2,11 +2,10 @@
   <ImportGroup
     Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))) == 'true'">
     <Import
-      Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+      Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
   </ImportGroup>
 
   <PropertyGroup Label="Project">
-    <NuGetAudit>true</NuGetAudit>
     <!-- Suppresses display of the sign-on banner -->
     <NoLogo>true</NoLogo>
     <!-- Prepend organization name to default namespace -->
@@ -43,7 +42,8 @@
     <!-- Use latest language version supported by the SDK -->
     <LangVersion>preview</LangVersion>
     <ClsCompliant>false</ClsCompliant>
-    <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
     <GenerateRequiresPreviewFeaturesAttribute>False</GenerateRequiresPreviewFeaturesAttribute>
     <DefaultItemExcludes>$(DefaultItemExcludes);*.log;*.binlog</DefaultItemExcludes>
   </PropertyGroup>
@@ -68,6 +68,8 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <!-- Any transitive dependency defined below will be used explicitly on the version stated -->
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <RestoreIgnoreFailedSources>true</RestoreIgnoreFailedSources>
+    <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
   </PropertyGroup>
 
   <PropertyGroup Label="Project Assets">
@@ -90,7 +92,10 @@
 
   <PropertyGroup Label="SDK Functionality" Condition="'$(UsingMicrosoftNETSdkWeb)' == 'True' OR '$(UsingMicrosoftNETSdkWorker)' == 'True'">
     <IsPackable>false</IsPackable>
-    <PackAsTool>false</PackAsTool>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Test Functionality" Condition="$(IsTestProject) == 'true'">
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
   <PropertyGroup Label="Disable Launch Settings for Worker Service" Condition="'$(UsingMicrosoftNETSdkWorker)' == 'True'">
@@ -98,7 +103,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="OpenAPI Analyzers" Condition="'$(UsingMicrosoftNETSdkWeb)' == 'True'">
-    <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/OpenApi</OpenApiDocumentsDirectory>
+    <OpenApiDocumentsDirectory>$(ArtifactsPath)/OpenApi</OpenApiDocumentsDirectory>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(UseWindowsForms) == 'true'">
@@ -138,14 +143,12 @@
     <Content Include="$(ProjectIcon)" Pack="true" PackagePath="icon.png" Visible="false" />
   </ItemGroup>
 
-  <!-- Uses pretty xUnit configuration -->
-  <ItemGroup Label="xUnit Configuration"
-             Condition="Exists('$(MSBuildThisFileDirectory)\xunit.runner.json') AND $(IsTestProject)=='True'">
-    <Content Include="$(MSBuildThisFileDirectory)\xunit.runner.json" Link="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  <ItemGroup Label="Test Configuration" Condition="Exists('$(MSBuildThisFileDirectory)\testconfig.json') AND $(IsTestProject)=='True'">
+    <Content Include="$(MSBuildThisFileDirectory)\testconfig.json" Link="testconfig.json"
+      CopyToOutputDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
 
-  <ItemGroup Label="Stylecop Configuration"
-    Condition="Exists('$(MSBuildThisFileDirectory)\stylecop.json')">
+  <ItemGroup Label="Stylecop Configuration" Condition="Exists('$(MSBuildThisFileDirectory)\stylecop.json')">
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)\stylecop.json" Link="stylecop.json"
       CopyToOutputDirectory="Never" Visible="false" />
   </ItemGroup>
@@ -153,8 +156,8 @@
   <!-- Project internals are exposed to projects named $(Project).Tests by default -->
   <ItemGroup
     Condition="@(InternalsVisibleToSuffix->Count()) == 0 AND @(InternalsVisibleTo->Count()) == 0">
-    <InternalsVisibleToSuffix Include=".Tests"/>
-    <InternalsVisibleToSuffix Include="Tests"/>
+    <InternalsVisibleToSuffix Include=".Tests" />
+    <InternalsVisibleToSuffix Include="Tests" />
   </ItemGroup>
 
   <PropertyGroup Label="Package">
@@ -163,13 +166,9 @@
     <Authors>Alexandros Kritikos</Authors>
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright © 2017-$(CurrentYear) Kritikos IO. All rights reserved.</Copyright>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageOutputPath Condition="$(PackageOutputPath) == ''">$(MSBuildThisFileDirectory)/packages</PackageOutputPath>
-    <PublishDir Condition="$(PublishDir) == ''">$(MSBuildThisFileDirectory)/upload/$(MSBuildProjectName)</PublishDir>
     <PackageIcon Condition="$(ProjectIconExists) == 'True'">icon.png</PackageIcon>
     <PackageReadmeFile Condition="$(ProjectReadMeExists) == 'True'">README.md</PackageReadmeFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <RepositoryType>git</RepositoryType>
     <!-- Optional: Embed source files that are not tracked by the source control manager to the PDB -->
     <!-- This is useful if you generate files during the build -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -190,14 +189,6 @@
 
   <ItemGroup Label="Analyzers">
     <PackageReference Include="NewStyleCop.Analyzers">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Label="Test Frameworks" Condition="'$(IsTestProject)' == 'true'">
-    <PackageReference Include="NSubstitute"/>
-    <PackageReference Include="NSubstitute.Analyzers.CSharp">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
