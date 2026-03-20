@@ -1,1 +1,2 @@
 Directory.Packages.props merge=union
+Directory.Packages.template.props merge=upstream-wins
