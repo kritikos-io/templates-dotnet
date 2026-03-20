@@ -10,5 +10,8 @@ trim_trailing_whitespace = true
 [*.sh]
 end_of_line = lf
 
-[{*.Generated.*.cs,Migrations/*,Scripts/*}]
+[*.{xml,csproj,props,targets,nuspec}]
+max_line_length = 1000
+
+[{*.Generated.*.cs,**/Migrations/*.cs}]
 generated_code = true
