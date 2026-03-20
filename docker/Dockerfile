@@ -39,6 +39,12 @@ RUN dotnet-gitversion /output json > /version.json
 FROM restore AS build
 ARG CONFIGURATION
 
+RUN mkdir -p /source/artifacts/OpenApi && \
+  mkdir -p /source/artifacts/bin && \
+  mkdir -p /source/artifacts/obj && \
+  mkdir -p /source/artifacts/nugets && \
+  mkdir -p /source/artifacts/upload
+
 COPY LICENSE.md README.md ./
 COPY --link src/ src/
 COPY --link tests/ tests/
@@ -69,6 +75,17 @@ ARG CONFIGURATION
 
 RUN --mount=type=cache,target=/root/.nuget/packages \
   dotnet test --no-build --configuration ${CONFIGURATION}
+
+FROM node:lts-alpine AS openapi-lint
+RUN npm install -g @stoplight/spectral-cli
+WORKDIR /openapi
+COPY --link .spectral.yaml .
+COPY --link --from=build /source/artifacts/OpenApi/ .
+RUN if ls *.json 1>/dev/null 2>&1; then \
+  spectral lint ./*.json --fail-severity=error; \
+  else \
+  echo "No OpenAPI documents found, skipping lint"; \
+  fi
 
 FROM test AS publish
 ARG CONFIGURATION
@@ -145,6 +162,7 @@ ARG RUNTIME_BASE
 ENV LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 
 COPY --link --from=publish --chown=root:root /app/publish .
+COPY --link --from=openapi-lint --chown=root:root /openapi/ /app/openapi/
 COPY --link --from=pyroscope-agent --chown=root:root /opt/pyroscope/ /pyroscope/
 RUN if [ "${RUNTIME_BASE}" = "self-contained" ]; then \
   chmod +x ${PUBLISHED_PROJECT}; \
