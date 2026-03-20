@@ -1,14 +1,12 @@
 <Project>
-  <ImportGroup
-    Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))) == 'true'">
-    <Import
-      Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  <ImportGroup Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))) == 'true'">
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
   </ImportGroup>
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <PackAsTool>false</PackAsTool>
     <IsPublishable>false</IsPublishable>
+    <NoWarn>$(NoWarn);SA1600</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

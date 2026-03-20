@@ -1,22 +1,17 @@
 <Project>
-  <ImportGroup
-    Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))) == 'true'">
-    <Import
-      Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  <ImportGroup Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))) == 'true'">
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
   </ImportGroup>
 
   <PropertyGroup>
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
+    <NoWarn>$(NoWarn);SA1600</NoWarn>
   </PropertyGroup>
 
   <ItemGroup Label="xUnit Configuration" Condition="Exists('$(MSBuildThisFileDirectory)\..\xunit.runner.json') AND $(IsTestProject)=='True' AND @(PackageReference->StartsWith('xunit')->Count()) &gt; 0">
     <Content Include="$(MSBuildThisFileDirectory)\..\xunit.runner.json" Link="xunit.runner.json"
       CopyToOutputDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
-
-  <PropertyGroup Condition="$(ContinuousIntegrationBuild) == 'true'">
-    <VSTestLogger>@(VSTestLogger)</VSTestLogger>
-  </PropertyGroup>
 
 </Project>
