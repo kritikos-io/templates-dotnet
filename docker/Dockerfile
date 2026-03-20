@@ -71,6 +71,7 @@ FROM test AS publish
 ARG CONFIGURATION
 ARG PUBLISHED_PROJECT
 ARG RUNTIME_BASE
+ARG PUBLISH_READY_TO_RUN=false
 ENV PROJECT=src/${PUBLISHED_PROJECT}/${PUBLISHED_PROJECT}.csproj
 
 RUN --mount=type=cache,target=/root/.nuget/packages \
@@ -78,11 +79,13 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
   if [ "${RUNTIME_BASE}" = "self-contained" ]; then \
   eval dotnet publish --configuration ${CONFIGURATION} \
   --self-contained --runtime ${RUNTIME_ID} \
+  /p:PublishReadyToRun=${PUBLISH_READY_TO_RUN} \
   ${VERSION_PROPS} \
   -o /app/publish ${PROJECT}; \
   else \
   eval dotnet publish --configuration ${CONFIGURATION} \
   --no-self-contained --runtime ${RUNTIME_ID} \
+  /p:PublishReadyToRun=${PUBLISH_READY_TO_RUN} \
   ${VERSION_PROPS} \
   -o /app/publish ${PROJECT}; \
   fi
@@ -90,7 +93,8 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
 FROM build AS pack
 
 RUN --mount=type=cache,target=/root/.nuget/packages \
-  dotnet pack --configuration Release --no-build --output /app/publish
+  . /source/version.env && \
+  eval dotnet pack --configuration Release ${VERSION_PROPS} --output /app/publish
 
 FROM sdk AS nuget-push
 WORKDIR /packages
