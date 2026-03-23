@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup
-    Condition="@(PackageReference->WithMetadataValue('Identity','Microsoft.AspNetCore.OpenApi')->Count()) &gt; 0">
+    Condition="'$(UsingMicrosoftNETSdkWeb)' == 'True' AND @(PackageReference->WithMetadataValue('Identity','Microsoft.AspNetCore.OpenApi')->Count()) &gt; 0">
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Server">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -31,6 +31,14 @@
     <Move SourceFiles="$(OpenApiDocumentsDirectory)/$(MSBuildProjectName).json"
       DestinationFiles="$(OpenApiDocumentsDirectory)/$(MSBuildProjectName)-v1.json"
       Condition="Exists('$(OpenApiDocumentsDirectory)/$(MSBuildProjectName).json')" />
+  </Target>
+
+  <Target Name="SetHierarchicalPackageOutputPath"
+    BeforeTargets="_GetAbsoluteOutputPathsForPack"
+    Condition="'$(ArtifactsPath)' != '' AND '$(PackageVersion)' != ''">
+    <PropertyGroup>
+      <PackageOutputPath>$(ArtifactsPath)/nuget/$(PackageId)/$(PackageVersion)</PackageOutputPath>
+    </PropertyGroup>
   </Target>
 
   <Target Name="AddInternalsVisibleTo" BeforeTargets="BeforeCompile">
