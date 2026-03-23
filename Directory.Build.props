@@ -9,7 +9,7 @@
     <!-- Suppresses display of the sign-on banner -->
     <NoLogo>true</NoLogo>
     <!-- Prepend organization name to default namespace -->
-    <RootNamespace>Cognify.$(MSBuildProjectName)</RootNamespace>
+    <RootNamespace>Kritikos.$(MSBuildProjectName)</RootNamespace>
     <!-- Enable global usings based on project type -->
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Generate documentation file and ignore warnings for undocumented elements -->
@@ -163,11 +163,10 @@
 
   <PropertyGroup Label="Package">
     <PackageId>$(RootNamespace)</PackageId>
-    <Company>Cognify</Company>
-    <Authors>Elisa Servidio, Dimitrios Tsapetis, Alexandros Kritikos, Stefanos Katsikas, Katerina Pouspourika, Antonia Tsatsouli</Authors>
+    <Company>Kritikos IO</Company>
+    <Authors>Alexandros Kritikos</Authors>
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright © 2017-$(CurrentYear) Kritikos IO. All rights reserved.</Copyright>
-    <Copyright>Copyright © 2024-$(CurrentYear) Cognify. All rights reserved.</Copyright>
     <PackageIcon Condition="$(ProjectIconExists) == 'True'">icon.png</PackageIcon>
     <PackageReadmeFile Condition="$(ProjectReadMeExists) == 'True'">README.md</PackageReadmeFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

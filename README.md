@@ -5,11 +5,11 @@ A starting point for new .NET projects, based on opinionated rules.
 ## Getting started
 
 1. In order to be able to update your repository with the latest changes, you can use the following command **after creating** your repo:
-  ```bash
-  git remote add template https://github.com/Cognify-App/templates-dotnet
-  git fetch --all
-  git merge template/main --allow-unrelated-histories
-  ```
+   ```bash
+   git remote add template https://github.com/kritikos-io/templates-dotnet
+   git fetch --all
+   git merge template/main --allow-unrelated-histories
+   ```
 1. Do this as soon as possible, as the unrelated histories flag will lead to a few conflicts that you will need to resolve manually.
 1. Afterwards, you can pull future changes using
    ```bash
