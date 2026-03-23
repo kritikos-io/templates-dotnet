@@ -1,6 +1,6 @@
 <Project>
   <ItemGroup Label="Packages">
-    <PackageVersion Include="GitVersion.MsBuild" Version="6.6.2" />
+    <PackageVersion Include="GitVersion.MsBuild" Version="6.7.0" />
     <PackageVersion Include="Microsoft.Sbom.Targets" Version="4.1.5" />
     <PackageVersion Include="NewStyleCop.Analyzers" Version="1.2.1" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
