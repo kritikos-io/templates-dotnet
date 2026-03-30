@@ -3,10 +3,11 @@ is_global = true
 # Ruleset replacement
 # C# compiler diagnostics
 dotnet_diagnostic.CS1573.severity = none # Missing XML comment for parameter
-dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
+dotnet_diagnostic.CS1591.severity = suggestion # Missing XML comment for publicly visible type or member
 dotnet_diagnostic.CS2008.severity = none # No source files specified
 
 # Code quality analyzers
+dotnet_diagnostic.CA1515.severity = suggestion # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1515
 dotnet_diagnostic.CA1303.severity = none # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1303
 dotnet_diagnostic.CA1707.severity = none # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1707
 dotnet_diagnostic.CA1848.severity = none # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1848
