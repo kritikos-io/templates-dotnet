@@ -49,8 +49,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- Defaults to checked context for math operations, throws OverflowException when needed -->
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <!-- Defaults to unchecked context for math operations for performance -->
+    <!-- set to true to throws OverflowException when needed -->
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
   </PropertyGroup>
 
   <PropertyGroup Label="OpenApi Source Generated Interceptors">
