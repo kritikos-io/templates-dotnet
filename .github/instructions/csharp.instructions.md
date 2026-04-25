@@ -15,3 +15,4 @@ Code style is enforced by `.editorconfig`, `.globalconfig`, and StyleCop analyze
 
 - Prefer **records** for DTOs, value objects, and other immutable data carriers.
 - Use `LoggerMessage`-generated `partial` methods on a `partial class` — never log inline (e.g., `logger.LogInformation(…)`).
+

@@ -32,7 +32,7 @@ These are configured in the root `Directory.Build.props` — do **not** set them
 
 Handled automatically via `<InternalsVisibleToSuffix>` in the root props. Default suffixes are `.Tests` and `Tests`. To add custom visibility:
 
-<parameter name="newString">```xml
+```xml
 <ItemGroup>
   <InternalsVisibleTo Include="MyProject.IntegrationTests" />
 </ItemGroup>
