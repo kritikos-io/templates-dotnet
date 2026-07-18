@@ -10,10 +10,16 @@ description: "Use when writing API endpoints, routing, middleware, request/respo
 
 ## Endpoints
 
-- Prefer **Minimal APIs**; use Controllers only when the added structure is justified.
+- Prefer **Minimal APIs**; use Controllers only when the endpoint group requires action filters, model binding customisation, or exceeds 10 endpoints sharing significant cross-cutting logic.
 - Group related endpoints using `MapGroup()` with a shared prefix and tag.
 - Use **typed results** (`TypedResults.Ok()`, `TypedResults.NotFound()`) over untyped `Results` for OpenAPI metadata inference.
 - Return **`ProblemDetails`** (RFC 9457) for all error responses — configure via `AddProblemDetails()`.
+
+## Authorisation
+
+- Apply `.RequireAuthorization()` at the group level for protected resources.
+- Reference policy names through `const string` fields on a shared static class (e.g., `.RequireAuthorization(AuthorizationPolicies.RequireAdminRole)`) instead of inline string literals.
+- Mark public endpoints explicitly with `.AllowAnonymous()`.
 
 ## Request Handling
 

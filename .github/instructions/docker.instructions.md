@@ -16,11 +16,11 @@ applyTo: "docker/**,compose*.yaml"
 
 ## Build Args
 
-- `RUNTIME_BASE`: `web` (ASP.NET), `app` (console), or `self-contained`
+- `RUNTIME_BASE`: `web` (ASP.NET), `app` (console), or `self-contained`. If a use case does not match `web`, `app`, or `self-contained`, do not invent a new `RUNTIME_BASE` value — flag this to the user and ask which existing value best fits their scenario.
 - `CONFIGURATION`: `Release` (default) or `Debug`
 - `PUBLISHED_PROJECT`: Project name to publish (without path or extension)
 - `DATABASE_PROJECT`: EF Core project for migration bundles
-- `DBCONTEXT`: Optional DbContext name for migrations
+- `DBCONTEXT`: Optional DbContext name for migrations. If omitted, the migration bundle step must not pass `--context`; EF Core auto-discovers the single DbContext in `DATABASE_PROJECT`.
 
 ## Image Selection
 
