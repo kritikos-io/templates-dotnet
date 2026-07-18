@@ -43,34 +43,41 @@
 
   <Target Name="AddInternalsVisibleTo" BeforeTargets="BeforeCompile">
     <!--
-      Add an ItemGroup with tags in the following format:
-      <InternalsVisibleTo Include="CustomTest1" />
-        -> [assembly: InternalsVisibleTo("CustomTest1")]
-      <InternalsVisibleTo Include="CustomTest2, PublicKey=abc" />
-        -> [assembly: InternalsVisibleTo("CustomTest2, PublicKey=abc")]
-      <InternalsVisibleTo Include="$(AssemblyName).Custom" />
-        -> [assembly: InternalsVisibleTo("ClassLibrary1.Custom")]
+      Exposes assembly internals to friend assemblies.
 
-      on a project with assembly name ClasLibrary1:
+      The .NET SDK already turns <InternalsVisibleTo Include="..." /> items into
+      [assembly: InternalsVisibleTo("...")] attributes in its GetAssemblyAttributes
+      target (including strong-name PublicKey handling via PublicKey/Key metadata).
+      This target must therefore NOT emit those attributes itself - doing so emits
+      every friend assembly twice.
+
+      Instead it only layers the project-local convention on top of the SDK:
+        * translate <InternalsVisibleToSuffix> entries into InternalsVisibleTo items
+          so the SDK can emit them, and
+        * apply a sensible default when a project declared no friend assemblies.
+
+      Examples on an assembly named "ClassLibrary1":
+        <InternalsVisibleTo Include="CustomTest1" />        (handled by the SDK)
+          -> [assembly: InternalsVisibleTo("CustomTest1")]
+        <InternalsVisibleToSuffix Include=".Tests" />       (handled here)
+          -> [assembly: InternalsVisibleTo("ClassLibrary1.Tests")]
+
+      Running at build time (before GetAssemblyAttributes) means the counts below
+      see items declared in both imported props and the project body, so an
+      explicit InternalsVisibleTo correctly suppresses the default suffix.
+    -->
+
+    <!-- Default: expose internals to "<AssemblyName>.Tests" when the project has
+         not declared any friend assemblies of its own. -->
+    <ItemGroup Condition="@(InternalsVisibleTo->Count()) == 0 AND @(InternalsVisibleToSuffix->Count()) == 0">
       <InternalsVisibleToSuffix Include=".Tests" />
-        -> [assembly: InternalsVisibleTo("ClassLibrary1.Tests")]
-      <InternalsVisibleToSuffix Include=".FunctionalTests" />
-        -> [assembly: InternalsVisibleTo("ClassLibrary1.FunctionalTests")]
-     -->
-
-    <!-- Handle InternalsVisibleTo -->
-    <ItemGroup Condition="'@(InternalsVisibleTo->Count())' &gt; 0">
-      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-        <_Parameter1>%(InternalsVisibleTo.Identity)</_Parameter1>
-      </AssemblyAttribute>
     </ItemGroup>
 
-    <!-- Handle InternalsVisibleToSuffix -->
+    <!-- Translate the suffix convention into InternalsVisibleTo items for the SDK,
+         skipping the current assembly (e.g. a "*.Tests" project itself). -->
     <ItemGroup Condition="@(InternalsVisibleToSuffix->Count()) &gt; 0">
-      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo"
-        Condition="$(AssemblyName.EndsWith(%(InternalsVisibleToSuffix.Identity))) == 'false'">
-        <_Parameter1>$(AssemblyName)%(InternalsVisibleToSuffix.Identity)</_Parameter1>
-      </AssemblyAttribute>
+      <InternalsVisibleTo Include="$(AssemblyName)%(InternalsVisibleToSuffix.Identity)"
+        Condition="$(AssemblyName.EndsWith(%(InternalsVisibleToSuffix.Identity))) == 'false'" />
     </ItemGroup>
   </Target>
 
