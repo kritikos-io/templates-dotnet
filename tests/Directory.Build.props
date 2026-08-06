@@ -6,7 +6,7 @@
   <PropertyGroup>
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
-    <NoWarn>$(NoWarn);SA1600;SA1601;CS1591</NoWarn>
+    <NoWarn>$(NoWarn);SA1600;SA1601</NoWarn>
   </PropertyGroup>
 
   <ItemGroup Label="xUnit Configuration" Condition="Exists('$(MSBuildThisFileDirectory)\..\xunit.runner.json') AND $(IsTestProject)=='True' AND @(PackageReference->StartsWith('xunit')->Count()) &gt; 0">

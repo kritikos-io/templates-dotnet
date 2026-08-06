@@ -6,7 +6,7 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
-    <NoWarn>$(NoWarn);SA1600;SA1601;CS1591</NoWarn>
+    <NoWarn>$(NoWarn);SA1600;SA1601</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
