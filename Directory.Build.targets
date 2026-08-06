@@ -29,7 +29,7 @@
     AfterTargets="GenerateOpenApiDocuments"
     Condition="'$(OpenApiDocumentsDirectory)' != ''">
     <Move SourceFiles="$(OpenApiDocumentsDirectory)/$(MSBuildProjectName).json"
-      DestinationFiles="$(OpenApiDocumentsDirectory)/$(MSBuildProjectName)-v1.json"
+      DestinationFiles="$(OpenApiDocumentsDirectory)/$(MSBuildProjectName)_v1.json"
       Condition="Exists('$(OpenApiDocumentsDirectory)/$(MSBuildProjectName).json')" />
   </Target>
 
