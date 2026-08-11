@@ -79,20 +79,12 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Project Assets">
-    <ProjectIcon Condition="Exists('$(MSBuildThisFileDirectory)\icon.png')">
-      $(MSBuildThisFileDirectory)icon.png
-    </ProjectIcon>
-    <ProjectIcon Condition="Exists('$(MSBuildProjectDirectory)\icon.png')">
-      $(MSBuildProjectDirectory)icon.png
-    </ProjectIcon>
+    <ProjectIcon Condition="Exists('$(MSBuildThisFileDirectory)icon.png')">$(MSBuildThisFileDirectory)icon.png</ProjectIcon>
+    <ProjectIcon Condition="Exists('$(MSBuildProjectDirectory)\icon.png')">$(MSBuildProjectDirectory)\icon.png</ProjectIcon>
     <ProjectIconExists Condition="$(ProjectIcon) != ''">true</ProjectIconExists>
 
-    <ProjectReadMe Condition="Exists('$(MSBuildThisFileDirectory)\README.md')">
-      $(MSBuildThisFileDirectory)README.md
-    </ProjectReadMe>
-    <ProjectReadMe Condition="Exists('$(MSBuildProjectDirectory)\README.md')">
-      $(MSBuildProjectDirectory)README.md
-    </ProjectReadMe>
+    <ProjectReadMe Condition="Exists('$(MSBuildThisFileDirectory)README.md')">$(MSBuildThisFileDirectory)README.md</ProjectReadMe>
+    <ProjectReadMe Condition="Exists('$(MSBuildProjectDirectory)\README.md')">$(MSBuildProjectDirectory)\README.md</ProjectReadMe>
     <ProjectReadMeExists Condition="$(ProjectReadMe) != ''">true</ProjectReadMeExists>
   </PropertyGroup>
 
@@ -127,11 +119,6 @@
     <EFOptimizeContext>true</EFOptimizeContext>
   </PropertyGroup>
 
-  <!-- Mark assemblies as CLS compliant so the compiler warns on non compliant usage -->
-  <PropertyGroup Condition="$(IsPackable) == 'true'">
-    <ClsCompliant>true</ClsCompliant>
-    <GenerateSBOM>true</GenerateSBOM>
-  </PropertyGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.CLSCompliant">
       <_Parameter1>$(ClsCompliant)</_Parameter1>

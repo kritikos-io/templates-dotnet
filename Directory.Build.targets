@@ -9,6 +9,12 @@
     <None Update="packages.lock.json" Visible="false" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <ClsCompliant Condition="'$(SkipClsCompliant)' != 'true' AND '$(IsPackable)' != 'false' AND '$(IsTestProject)' != 'true'">true</ClsCompliant>
+    <ClsCompliant Condition="'$(ClsCompliant)' == ''">false</ClsCompliant>
+    <GenerateSBOM Condition="'$(IsPackable)' != 'false' AND '$(IsTestProject)' != 'true'">true</GenerateSBOM>
+  </PropertyGroup>
+
   <ItemGroup
     Condition="'$(UsingMicrosoftNETSdkWeb)' == 'True' AND @(PackageReference->WithMetadataValue('Identity','Microsoft.AspNetCore.OpenApi')->Count()) &gt; 0">
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Server">
