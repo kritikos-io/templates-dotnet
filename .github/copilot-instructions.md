@@ -13,8 +13,7 @@ You are a senior software engineer and solution architect. Prioritize correctnes
 
 ## Build & test
 
-- Build: `dotnet build AspNetCore.Extensions.slnx`
-- Test: `dotnet test AspNetCore.Extensions.slnx` — runs every test project (TUnit on Microsoft.Testing.Platform) in a single invocation. This is the canonical way to run the suite; trust it over any other approach.
+- Always build and test the entire solution (pass the solution slnx as a parameter to `dotnet build` and `dotnet test`).
 
 ## Documentation
 
