@@ -17,13 +17,13 @@ Versioning is **GitVersion-driven** (`GitVersion.yml`). Do not hand-pick version
 | `release/*`, `hotfix/*`, `feature/*` | branch name | `…-<branch>.N` |
 
 - Tags use the prefix `v` (regex `[vV]?` also accepts `V` or none).
-- Only changes under `src/`, `Directory.Packages.props`, or `GitVersion.yml` increment the version.
+- Each `src/*` project is versioned **independently**: only changes under that project's own directory, `Directory.Packages.props`, or `GitVersion.yml` increment its version (see `GenerateProjectGitVersionConfig` in `src/Directory.Build.props` and `GitVersion.template.yml`). A change to one library does not bump a sibling's version.
 - Increments are suppressed for already-merged branches and already-tagged commits.
 
 ## Procedure
 
 1. **Sync.** `git fetch --all --tags && git status` — confirm clean.
-2. **Compute.** `dotnet build -getProperty:Version` — verify the value matches expectations.
+2. **Compute.** `dotnet build src\<Project>\<Project>.csproj -getProperty:Version` — verify the value matches expectations for that specific project (there is no single repo-wide version).
 3. **Pack.** `dotnet pack -c Release` (or use the [docker-build](../docker-build/SKILL.md) `pack` target). Artifacts land in `artifacts/nuget/`.
 4. **Tag.** `git tag -a v<version> -m "Release v<version>" && git push origin v<version>`.
 5. **Publish** packages to the configured feed.
@@ -35,4 +35,4 @@ For hotfixes: branch from the latest stable tag (`git switch -c hotfix/<name> v<
 
 - **Tags are immutable** once pushed; never move or delete them.
 - **Never skip a `PATCH`** — ship a fix forward.
-- **Do not edit `GitVersion.yml` to force a version.** Address the underlying cause (missing tag, branch base, path filter, commit messages).
+- **Do not edit `GitVersion.yml` or a generated `src/*/GitVersion.yml` to force a version.** Address the underlying cause (missing tag, branch base, path filter, commit messages). Generated per-project files are gitignored build artifacts, re-derived from the root `GitVersion.yml` on every build — never hand-edit them.
