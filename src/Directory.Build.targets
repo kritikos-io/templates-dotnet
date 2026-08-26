@@ -1,0 +1,21 @@
+<Project>
+  <ImportGroup
+    Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))) == 'true'">
+    <Import
+      Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
+  </ImportGroup>
+
+  <!-- Overrides the root's CreateReleaseNotesFromFile: its Condition="Exists('$(ChangeLogPath)')" is
+  evaluated before its own DependsOnTargets="GenerateChangelogFromGit" has run, so on a clean build the file
+  never exists yet and PackageReleaseNotes silently never gets set. Moving the existence check onto the
+  task (evaluated after the dependency runs) instead of the target fixes the ordering. -->
+  <Target Name="CreateReleaseNotesFromFile" BeforeTargets="GenerateNuspec"
+    DependsOnTargets="GenerateChangelogFromGit">
+    <ReadLinesFromFile File="$(ChangeLogPath)" Condition="Exists('$(ChangeLogPath)')">
+      <Output TaskParameter="Lines" ItemName="ReleaseNoteLines" />
+    </ReadLinesFromFile>
+    <PropertyGroup Condition="Exists('$(ChangeLogPath)')">
+      <PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
+</Project>
