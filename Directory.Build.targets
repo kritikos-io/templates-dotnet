@@ -39,6 +39,28 @@
       Condition="Exists('$(OpenApiDocumentsDirectory)/$(MSBuildProjectName).json')" />
   </Target>
 
+  <!--
+    OpenApiDocumentsDirectory tracks $(ArtifactsPath), which developers may override to a
+    machine-specific location. Client generators (e.g. a checked-in .refitter file) need a
+    stable, repo-relative path, so mirror the renamed document(s) into the repo's own
+    artifacts/OpenApi folder regardless of where ArtifactsPath actually points.
+
+    Uses a glob (not a single "_v1.json" name) because a project may define multiple named
+    OpenAPI documents (AddOpenApi("v1"), AddOpenApi("v2"), ...), each emitted as its own
+    "$(MSBuildProjectName)_{documentName}.json" file.
+  -->
+  <Target Name="CopyOpenApiDocumentsToRepoArtifacts"
+    AfterTargets="RenameOpenApiDocuments"
+    Condition="'$(OpenApiDocumentsDirectory)' != ''">
+    <ItemGroup>
+      <OpenApiDocumentToCopy Include="$(OpenApiDocumentsDirectory)/$(MSBuildProjectName)*.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(OpenApiDocumentToCopy)"
+      DestinationFolder="$(MSBuildThisFileDirectory)artifacts/OpenApi"
+      SkipUnchangedFiles="true"
+      Condition="@(OpenApiDocumentToCopy->Count()) &gt; 0" />
+  </Target>
+
   <Target Name="AddInternalsVisibleTo" BeforeTargets="BeforeCompile">
     <!--
       Exposes assembly internals to friend assemblies.
