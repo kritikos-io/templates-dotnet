@@ -39,14 +39,6 @@
       Condition="Exists('$(OpenApiDocumentsDirectory)/$(MSBuildProjectName).json')" />
   </Target>
 
-  <Target Name="SetHierarchicalPackageOutputPath"
-    BeforeTargets="_GetAbsoluteOutputPathsForPack"
-    Condition="'$(ArtifactsPath)' != '' AND '$(PackageVersion)' != ''">
-    <PropertyGroup>
-      <PackageOutputPath>$(ArtifactsPath)/nuget/$(PackageId)/$(PackageVersion)</PackageOutputPath>
-    </PropertyGroup>
-  </Target>
-
   <Target Name="AddInternalsVisibleTo" BeforeTargets="BeforeCompile">
     <!--
       Exposes assembly internals to friend assemblies.
