@@ -1156,3 +1156,6 @@ artifacts/**
 
 ## Machine-specific overrides
 compose.override.yaml
+
+## Generated per-project GitVersion config (rendered from GitVersion.template.yml)
+src/*/GitVersion.yml

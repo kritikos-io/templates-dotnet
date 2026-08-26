@@ -1,9 +1,79 @@
 <Project>
-  <ImportGroup Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))) == 'true'">
-    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  <ImportGroup
+    Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))) == 'true'">
+    <Import
+      Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
   </ImportGroup>
 
   <PropertyGroup Label="Package">
     <PackageProjectUrl>http://localhost</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Label="GitVersion per-project scoping">
+    <GitVersionTemplateFile>$(MSBuildThisFileDirectory)..\GitVersion.yml</GitVersionTemplateFile>
+    <_GitVersionIgnorePathsRegex>(paths:\s*\r?\n\s*- ).+</_GitVersionIgnorePathsRegex>
+  </PropertyGroup>
+
+  <!--
+    GitVersion.MsBuild runs `gitversion "$(MSBuildProjectDirectory)"`, and GitVersion resolves its
+  config by
+    walking up from that directory to the repo root, using the first GitVersion.yml it finds. Rendering
+  one
+    here (rewriting the repo-root GitVersion.yml's ignore.paths entry, so there is a single
+  hand-maintained
+    file) scopes ignore.paths to this project's own directory plus the full transitive closure of its
+    ProjectReference dependencies, so a change anywhere upstream in the dependency graph also counts
+  toward
+    this project's version. Generated file is gitignored (see .gitignore).
+  -->
+  <Target Name="_CollectGitVersionTransitiveReferences" Returns="@(_GitVersionTransitiveRef)">
+    <ItemGroup>
+      <!-- Resolve to FullPath here, before crossing the MSBuild task-output boundary below:
+      relative
+           Includes from an intermediate project resolve against the wrong directory once passed through. -->
+      <_GitVersionTransitiveRef Include="@(ProjectReference->'%(FullPath)')" />
+    </ItemGroup>
+    <MSBuild Projects="@(ProjectReference)" Targets="_CollectGitVersionTransitiveReferences"
+      Condition="'@(ProjectReference)' != ''" SkipNonexistentTargets="true">
+      <Output TaskParameter="TargetOutputs" ItemName="_GitVersionTransitiveRef" />
+    </MSBuild>
+  </Target>
+
+  <Target Name="GenerateProjectGitVersionConfig" BeforeTargets="RunGitVersion"
+    Condition="Exists('$(GitVersionTemplateFile)')">
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="_CollectGitVersionTransitiveReferences"
+      Condition="'@(ProjectReference)' != ''" SkipNonexistentTargets="true">
+      <Output TaskParameter="TargetOutputs" ItemName="_GitVersionScopeProjectRef" />
+    </MSBuild>
+    <ItemGroup>
+      <_GitVersionScopePath Include="$(MSBuildProjectDirectory)" />
+      <_GitVersionScopePath Include="@(_GitVersionScopeProjectRef->'%(RootDir)%(Directory)')" />
+    </ItemGroup>
+    <ItemGroup>
+      <_GitVersionScopePath>
+        <EscapedPath>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::MakeRelative('$(MSBuildThisFileDirectory)..\',
+          '%(Identity)'))).Replace('\', '/').Replace('.', '\.').Replace('/', '\/'))</EscapedPath>
+      </_GitVersionScopePath>
+    </ItemGroup>
+    <PropertyGroup>
+      <_GitVersionIgnorePattern>^(?!@(_GitVersionScopePath->'%(EscapedPath)',
+        '|')|Directory\.Packages\.props|GitVersion\.yml).*</_GitVersionIgnorePattern>
+      <_GitVersionTemplateContent>$([System.IO.File]::ReadAllText('$(GitVersionTemplateFile)'))</_GitVersionTemplateContent>
+      <_GitVersionRenderedContent>$([System.Text.RegularExpressions.Regex]::Replace('$(_GitVersionTemplateContent)',
+        '$(_GitVersionIgnorePathsRegex)', '$1$(_GitVersionIgnorePattern)'))</_GitVersionRenderedContent>
+    </PropertyGroup>
+    <Error Condition="'$(_GitVersionRenderedContent)' == '$(_GitVersionTemplateContent)'"
+      Text="GenerateProjectGitVersionConfig: could not find an ignore.paths entry to rewrite in $(GitVersionTemplateFile) for $(MSBuildProjectName) -- check its ignore.paths structure." />
+    <WriteLinesToFile File="$(MSBuildProjectDirectory)\GitVersion.yml"
+      Lines="$(_GitVersionRenderedContent)"
+      Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
+
+  <PropertyGroup Label="Changelog per-project scoping">
+    <!-- GenerateChangelogFromGit (root Directory.Build.targets) walks direct ProjectReference
+    directories when this is true. A dependency's own changes belong in its own changelog/version,
+    not copied here (that would misattribute a dependency's commit as this project's own change):
+    scope to this project's own directory only. -->
+    <ChangeLogIncludeReferences>false</ChangeLogIncludeReferences>
   </PropertyGroup>
 </Project>
