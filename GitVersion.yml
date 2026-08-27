@@ -3,23 +3,15 @@ mode: ContinuousDelivery
 tag-prefix: '[vV]?'
 ignore:
   paths:
-    - ^(?!src\/|Directory\.Packages\.props|GitVersion.yml).*
+  - ^(?!src\/|Directory\.Packages\.props|GitVersion.yml).*
 branches:
-  develop:
-    label: 'beta'
-    regex: '^(dev|develop|development)$'
-    source-branches:
-      - main
+  main:
+    mode: ContinuousDeployment
   feature:
     mode: ContinuousDelivery
+    regex: ^(features?|hotfix(es)?)[\/-](?<BranchName>.+)
     source-branches:
-      - develop
-      - main
-  hotfix:
-    regex: ^hotfix?[\/-](?<BranchName>.+)
-    mode: ContinuousDelivery
-  release:
-    mode: ContinuousDelivery
+    - main
 
 prevent-increment:
   of-merged-branch: true

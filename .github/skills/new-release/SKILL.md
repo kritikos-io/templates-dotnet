@@ -12,12 +12,11 @@ Versioning is **GitVersion-driven** (`GitVersion.yml`). Do not hand-pick version
 
 | Branch | Label | Resulting version |
 | --- | --- | --- |
-| `main` | — | `MAJOR.MINOR.PATCH` (stable) |
-| `develop` / `dev` / `development` | `beta` | `MAJOR.MINOR.PATCH-beta.N` |
-| `release/*`, `hotfix/*`, `feature/*` | branch name | `…-<branch>.N` |
+| `main` | — | `MAJOR.MINOR.PATCH` (stable, held until the next tag) |
+| `feature/*`, `hotfix/*` | branch name | `…-<branch>.N` |
 
 - Tags use the prefix `v` (regex `[vV]?` also accepts `V` or none).
-- Each `src/*` project is versioned **independently**: only changes under that project's own directory, `Directory.Packages.props`, or `GitVersion.yml` increment its version (see `GenerateProjectGitVersionConfig` in `src/Directory.Build.props` and `GitVersion.template.yml`). A change to one library does not bump a sibling's version.
+- Each `src/*` project is versioned **independently**: only changes under that project's own directory, `Directory.Packages.props`, or `GitVersion.yml` increment its version (see `GenerateProjectGitVersionConfig` in `src/Directory.Build.props`, which renders the root `GitVersion.yml` into a per-project copy). A change to one library does not bump a sibling's version.
 - Increments are suppressed for already-merged branches and already-tagged commits.
 
 ## Procedure
@@ -29,7 +28,7 @@ Versioning is **GitVersion-driven** (`GitVersion.yml`). Do not hand-pick version
 5. **Publish** packages to the configured feed.
 6. **Create the GitHub release** linked to the tag, using the generated changelog as notes.
 
-For hotfixes: branch from the latest stable tag (`git switch -c hotfix/<name> v<latest-stable>`), follow the procedure, then back-merge into `main` and `develop`.
+For hotfixes: branch from the latest stable tag (`git switch -c hotfix/<name> v<latest-stable>`), follow the procedure, then merge back into `main`. There is no `develop` branch to reconcile with — this repo is trunk-based.
 
 ## Guardrails
 
