@@ -10,6 +10,7 @@
     <NoLogo>true</NoLogo>
     <!-- Prepend organization name to default namespace -->
     <RootNamespace>Kritikos.$(MSBuildProjectName)</RootNamespace>
+    <AssemblyName>Kritikos.$(MSBuildProjectName)</AssemblyName>
     <!-- Enable global usings based on project type -->
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Generate documentation file and ignore warnings for undocumented elements -->
@@ -163,7 +164,7 @@
     <EnablePackageValidation>true</EnablePackageValidation>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup Label="Versioning" Condition="'$(IsTestProject)' != 'true'">
