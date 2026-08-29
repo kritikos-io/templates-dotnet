@@ -5,13 +5,16 @@ ignore:
   paths:
   - ^(?!src\/|Directory\.Packages\.props|GitVersion.yml).*
 branches:
-  main:
+  release:
     mode: ContinuousDeployment
-  feature:
-    mode: ContinuousDelivery
-    regex: ^(features?|hotfix(es)?)[\/-](?<BranchName>.+)
+    label: ''
+    increment: Patch
+    regex: ^releases?[\/-](?<BranchName>.+)
     source-branches:
     - main
+    is-release-branch: true
+    is-main-branch: true
+    pre-release-weight: 55000
 
 prevent-increment:
   of-merged-branch: true

@@ -10,14 +10,18 @@ Versioning is **GitVersion-driven** (`GitVersion.yml`). Do not hand-pick version
 
 ## Versioning
 
+The root `GitVersion.yml` uses the `TrunkBased/preview1` workflow. Its `Mainline` strategy is what makes stable branches increment per commit rather than holding one version until the next tag.
+
 | Branch | Label | Resulting version |
 | --- | --- | --- |
-| `main` | — | `MAJOR.MINOR.PATCH` (stable, held until the next tag) |
-| `feature/*`, `hotfix/*` | branch name | `…-<branch>.N` |
+| `main`, `release/*` | — | `MAJOR.MINOR.PATCH` (stable; **patch increments on every commit**) |
+| `feature/*` | branch name | `…-<branch>.N` (pre-release; merging bumps **minor**) |
+| `hotfix/*` | branch name | `…-<branch>.N` (pre-release; merging bumps **patch**) |
 
 - Tags use the prefix `v` (regex `[vV]?` also accepts `V` or none).
 - Each `src/*` project is versioned **independently**: only changes under that project's own directory, `Directory.Packages.props`, or `GitVersion.yml` increment its version (see `GenerateProjectGitVersionConfig` in `src/Directory.Build.props`, which renders the root `GitVersion.yml` into a per-project copy). A change to one library does not bump a sibling's version.
-- Increments are suppressed for already-merged branches and already-tagged commits.
+- All five packages still share one tag namespace, so a tag rebases every project's `MAJOR.MINOR` at once. Only the patch/pre-release counters diverge per project.
+- Increments are suppressed on already-tagged commits, so the tagged commit builds exactly the tagged version.
 
 ## Changelog
 
