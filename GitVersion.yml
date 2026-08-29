@@ -1,5 +1,4 @@
-workflow: GitHubFlow/v1
-mode: ContinuousDelivery
+workflow: TrunkBased/preview1
 tag-prefix: '[vV]?'
 ignore:
   paths:
