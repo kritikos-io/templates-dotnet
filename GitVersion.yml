@@ -17,5 +17,4 @@ branches:
 
 prevent-increment:
   of-merged-branch: true
-  when-branch-merged: true
   when-current-commit-tagged: true
